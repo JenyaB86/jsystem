@@ -24,8 +24,8 @@ public class AntDataDriven extends AntFlowControl {
 	private Parameter dataSourceFile = new Parameter();
 
 	private Parameter dataSourceParam = new Parameter();
-	
-	private Parameter dataSourceRows = new Parameter();
+
+	private Parameter dataSourceLineIndexes = new Parameter();
 
 	public static String XML_TAG = CommonResources.JSYSTEM_DATADRIVEN;
 	public static String XML_CONTAINER_TAG = "sequential";
@@ -44,7 +44,6 @@ public class AntDataDriven extends AntFlowControl {
 		dataSourceFile.setDescription("Data Source File");
 		// TODO: sync section with comment/name
 		dataSourceFile.setSection(getComment());
-
 		addParameter(dataSourceFile);
 
 		dataSourceParam.setType(Parameter.ParameterType.STRING);
@@ -53,13 +52,14 @@ public class AntDataDriven extends AntFlowControl {
 		dataSourceParam.setDescription("Various data driven parameters");
 		dataSourceParam.setSection(getComment());
 		addParameter(dataSourceParam);
-		
-		dataSourceRows.setType(Parameter.ParameterType.STRING);
-		dataSourceRows.setValue("");
-		dataSourceRows.setName("Rows");
-		dataSourceRows.setDescription("Rows to execute (separated by ','), including ranges, i.e 1-5");
-		dataSourceRows.setSection(getComment());
-		addParameter(dataSourceRows);
+
+		dataSourceLineIndexes.setType(Parameter.ParameterType.STRING);
+		dataSourceLineIndexes.setValue("");
+		dataSourceLineIndexes.setName("LineIndexes");
+		dataSourceLineIndexes
+				.setDescription("One-based, comma separated list of the required line indexes. You can use '-' for ranges");
+		dataSourceLineIndexes.setSection(getComment());
+		addParameter(dataSourceLineIndexes);
 
 		setTestComment(defaultComment());
 
@@ -129,8 +129,11 @@ public class AntDataDriven extends AntFlowControl {
 	protected void loadParameters() {
 		setDataSourceFile(ScenarioHelpers.getParameterValueFromProperties(this, getFlowFullUUID(), "File",
 				dataSourceFile.getValue() == null ? null : dataSourceFile.getValue().toString()));
-		setDataSourceFile(ScenarioHelpers.getParameterValueFromProperties(this, getFlowFullUUID(), "Parameters",
+		setDataSourceParam(ScenarioHelpers.getParameterValueFromProperties(this, getFlowFullUUID(), "Parameters",
 				dataSourceParam.getValue() == null ? null : dataSourceParam.getValue().toString()));
+		setDataSourceLineIndexes(ScenarioHelpers.getParameterValueFromProperties(this, getFlowFullUUID(),
+				"LineIndexes", dataSourceLineIndexes.getValue() == null ? null : dataSourceLineIndexes.getValue()
+						.toString()));
 		loadAndSetUserDocumentation();
 	}
 
@@ -159,7 +162,11 @@ public class AntDataDriven extends AntFlowControl {
 	}
 
 	public void setDataSourceParam(String dataSourceParamValue) {
-		this.dataSourceParam.setValue(dataSourceParam);
+		this.dataSourceParam.setValue(dataSourceParamValue);
+	}
+
+	public void setDataSourceLineIndexes(String dataSourceLineIndexesValue) {
+		this.dataSourceLineIndexes.setValue(dataSourceLineIndexesValue);
 	}
 
 }
